@@ -10,9 +10,9 @@ using namespace v8;
 using namespace std;
 #define MAXS 1000
 #define MAXC 93
-#define MAXW 4999
+#define MAXW 250000UL
 
-long numofhitss=0, numofpatterns=0, numoftexts=0;
+int numofhitss=0, numofpatterns=0, numoftexts=0;
 
 double calculateResult(int numOfHits, int patternLen, int textLen){
     double patdiv = (double)numOfHits/(double)patternLen;

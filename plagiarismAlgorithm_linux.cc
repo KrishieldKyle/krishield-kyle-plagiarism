@@ -6,13 +6,12 @@
 #include <nan.h>
 #include <bitset>
 #include <sstream>
-using namespace v8; 
-using namespace std;
+using namespace v8;
 #define MAXS 1000
 #define MAXC 93
-#define MAXW 4999
+#define MAXW 250000UL
 
-long numofhitss=0, numofpatterns=0, numoftexts=0;
+int numofhitss=0, numofpatterns=0, numoftexts=0;
 
 double calculateResult(int numOfHits, int patternLen, int textLen){
     double patdiv = (double)numOfHits/(double)patternLen;
@@ -23,12 +22,12 @@ double calculateResult(int numOfHits, int patternLen, int textLen){
     return total;
 }
 
-    vector<string> arr2;
-    string text2;
+    std::vector<std::string> arr2;
+    std::string text2;
     int g[MAXS][MAXC];
     int f[MAXS];
-    bitset<MAXW> out[MAXS];
-    void initialize(vector<string> arr, string text)
+    std::bitset<MAXW> out[MAXS];
+    void initialize(std::vector<std::string> arr, std::string text)
     {
         numofhitss=0, numofpatterns=0, numoftexts=0;
         arr2 = arr;
@@ -42,15 +41,15 @@ double calculateResult(int numOfHits, int patternLen, int textLen){
     void buildMachine()
     {
         int state = 0,currState = 0,index = 0;
-        string str;
+        std::string str;
         ///Building a trie, each new node gets the next number as node-name.
-        for(int i = 0; i<arr2.size(); i++)
+        for(unsigned int i = 0; i<arr2.size(); i++)
         {
             str = arr2[i];
             numofpatterns+=str.size();
             currState = 0;
 
-            for(int j = 0; j<str.size(); j++)
+            for(unsigned int j = 0; j<str.size(); j++)
             {
                 index = str[j] - 33;
                 if(g[currState][index] == -1)
@@ -63,7 +62,7 @@ double calculateResult(int numOfHits, int patternLen, int textLen){
             ///stores whether i'th indexed string of arr, ends at state 'currState' or not. Thus adding the string to output by using 1 bit, hhh very memory efficient.
         }
         ///Failure function
-        queue<int>q;
+        std::queue<int>q;
         int s,fail;
         for(int i = 0; i<MAXC; i++)
         {
@@ -114,23 +113,23 @@ void newsearch(const Nan::FunctionCallbackInfo<v8::Value>& info){
 
     v8::Local<v8::Array> jsArr = v8::Local<v8::Array>::Cast(info[0]);   
 
-    std::vector<string> arr;
+    std::vector<std::string> arr;
     for (unsigned int i = 0; i < jsArr->Length(); i++) {
         v8::Local<v8::Value> jsElement = jsArr->Get(i);
 
         Nan::Utf8String jselem(jsElement->ToString());
-        string number = string(*jselem);  
+        std::string number = std::string(*jselem);  
 
         arr.push_back(number);
     }
 
     Nan::Utf8String param1(info[1]->ToString());
     // convert it to string
-    string text = string(*param1);
+    std::string text = std::string(*param1);
 
     Nan::Utf8String param2(info[2]->ToString());
     // convert it to string
-    string flag = string(*param2);
+    std::string flag = std::string(*param2);
 
 
     int myarraycounter=0;
@@ -141,22 +140,22 @@ void newsearch(const Nan::FunctionCallbackInfo<v8::Value>& info){
         buildMachine();
     }
     int state = 0;
-    for(int i = 0; i<text.size(); i++)
+    for(unsigned int i = 0; i<text.size(); i++)
     {
         state = nextState(state,text[i]); /// traverse the trie state/node for the text
         if(out[state].count() > 0) /// if the state has at least one output
         {
-            for(int j = 0; j<arr2.size(); j++) ///For finding position of search strings.
+            for(unsigned int j = 0; j<arr2.size(); j++) ///For finding position of search strings.
             {
                 if(out[state].test(j)) /// if j'th string is in the output of state, means a match is found.
                 {
                     numofhitss+=arr2[j].size();
                     int start = i -arr2[j].size()+1;
                    
-                    ostringstream oss;
+                    std::ostringstream oss;
  
                     oss <<"{ \"Word\": \""<<arr2[j]<<"\",\"Start\": "<<start<<",\"End\": "<<i<<" }";
-                    string word = oss.str ();
+                    std::string word = oss.str ();
                     
                     //string word = "{ \"Word\": \""+arr[j]+"\",\"Start\": "+to_string(start)+",\"End\": "+to_string(i)+" }";
                     // Local<String> retval = String::NewFromUtf8(isolate, word.c_str());
