@@ -110,12 +110,9 @@ double calculateResult(int numOfHits, int patternLen, int textLen){
     }
 
 
-void newsearch(const FunctionCallbackInfo<Value>& args){
+void newsearch(const Nan::FunctionCallbackInfo<v8::Value>& info){
 
-    Isolate* isolate = args.GetIsolate();
-    // Local<Array> array = Local<Array>::Cast(args[0]);
-    // string arr[array->Length()];
-    v8::Local<v8::Array> jsArr = v8::Local<v8::Array>::Cast(args[0]);
+    v8::Local<v8::Array> jsArr = v8::Local<v8::Array>::Cast(info[0]);   
 
     std::vector<string> arr;
     for (unsigned int i = 0; i < jsArr->Length(); i++) {
@@ -127,17 +124,17 @@ void newsearch(const FunctionCallbackInfo<Value>& args){
         arr.push_back(number);
     }
 
-    Nan::Utf8String param1(args[1]->ToString());
+    Nan::Utf8String param1(info[1]->ToString());
     // convert it to string
     string text = string(*param1);
 
-    Nan::Utf8String param2(args[2]->ToString());
+    Nan::Utf8String param2(info[2]->ToString());
     // convert it to string
     string flag = string(*param2);
 
 
     int myarraycounter=0;
-	Local<Array> myarray = Array::New(isolate);
+	Local<Array> myarray = Nan::New<v8::Array>();
 
     if(flag=="NEW"){
         initialize(arr,text);
@@ -164,7 +161,9 @@ void newsearch(const FunctionCallbackInfo<Value>& args){
                     //string word = "{ \"Word\": \""+arr[j]+"\",\"Start\": "+to_string(start)+",\"End\": "+to_string(i)+" }";
                     // Local<String> retval = String::NewFromUtf8(isolate, word.c_str());
                     // Nan::Set(myarray, myarraycounter, retval);
-                    myarray->Set(myarraycounter, String::NewFromUtf8(isolate, word.c_str()));
+                    // myarray->Set(myarraycounter, String::NewFromUtf8(isolate, word.c_str()));
+                    v8::Local<v8::Value> newword = Nan::New(word).ToLocalChecked();
+                    Nan::Set(myarray, myarraycounter, newword);
                     // cout << "Word " << arr[j] << " appears from "
                     // 	<< i - arr[j].size() + 1 << " to " << i << endl;
                     myarraycounter++;
@@ -198,12 +197,12 @@ void newsearch(const FunctionCallbackInfo<Value>& args){
 	Nan::Set(jsonObject, numoftextnprop, numoftextnvalue);
 	Nan::Set(jsonObject, arrayprop, arrayvalue);
 
-	args.GetReturnValue().Set(jsonObject);
+	info.GetReturnValue().Set(jsonObject);
 }
 
-
-void Init(Local<Object> exports) {
-  NODE_SET_METHOD(exports, "search", newsearch);
+void Init(v8::Local<v8::Object> exports) {
+  exports->Set(Nan::New("search").ToLocalChecked(),
+               Nan::New<v8::FunctionTemplate>(newsearch)->GetFunction());
 }
 
-NODE_MODULE(NODE_GYP_MODULE_NAME, Init)
+NODE_MODULE(plagiarism, Init)
