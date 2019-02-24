@@ -150,7 +150,7 @@ void newsearch(const Nan::FunctionCallbackInfo<v8::Value>& info){
             {
                 if(out[state].test(j)) /// if j'th string is in the output of state, means a match is found.
                 {
-                    numofhitss+=arr2[j].size();
+                    numofhitss+=arr2[j].size()+1;
                     int start = i -arr2[j].size()+1;
                    
                     std::ostringstream oss;
@@ -175,6 +175,7 @@ void newsearch(const Nan::FunctionCallbackInfo<v8::Value>& info){
     ////
 
     numoftexts=text.size();
+    numofhitss--;
     double total = calculateResult(numofhitss, numofpatterns, numoftexts);
 
     v8::Local<v8::Object> jsonObject = Nan::New<v8::Object>();
