@@ -9,7 +9,7 @@
 using namespace v8;
 #define MAXS 1000
 #define MAXC 93
-#define MAXW 250000UL
+#define MAXW 1000000
 
 int numofhitss=0, numofpatterns=0, numoftexts=0;
 

@@ -10,7 +10,7 @@ using namespace v8;
 using namespace std;
 #define MAXS 1000
 #define MAXC 93
-#define MAXW 250000UL
+#define MAXW 1000000
 
 long numofhitss=0, numofpatterns=0, numoftexts=0;
 
@@ -196,7 +196,6 @@ void newsearch(const Nan::FunctionCallbackInfo<v8::Value>& info){
 	Nan::Set(jsonObject, numofpatternprop, numofpatternvalue);
 	Nan::Set(jsonObject, numoftextnprop, numoftextnvalue);
 	Nan::Set(jsonObject, arrayprop, arrayvalue);
-
 	info.GetReturnValue().Set(jsonObject);
 }
 
