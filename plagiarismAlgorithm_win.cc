@@ -47,7 +47,7 @@ double calculateResult(int numOfHits, int patternLen, int textLen){
         for(int i = 0; i<arr2.size(); i++)
         {
             str = arr2[i];
-            numofpatterns+=str.size();
+            numofpatterns+=str.size()+1;
             currState = 0;
 
             for(int j = 0; j<str.size(); j++)
@@ -98,6 +98,7 @@ double calculateResult(int numOfHits, int patternLen, int textLen){
                 }
             }
         }
+        numofpatterns--;
     }
     int nextState(int s, char ch)
     {
