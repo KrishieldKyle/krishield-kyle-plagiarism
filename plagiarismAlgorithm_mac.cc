@@ -126,6 +126,25 @@ int nextState(int s, char ch)
 
 void newsearch(const Nan::FunctionCallbackInfo<v8::Value>& info){
 
+    if(info.Length()!=5){
+        return Nan::ThrowError(Nan::New("Function expecting 5 arguments").ToLocalChecked());
+    }
+    if(!info[0]->IsArray()) {
+        return Nan::ThrowError(Nan::New("expected arg 0: Should be an Array of Strings").ToLocalChecked());
+    }
+    if(!info[1]->IsString()) {
+        return Nan::ThrowError(Nan::New("expected arg 1: Should be a String").ToLocalChecked());
+    }
+    if(!info[2]->IsBoolean()) {
+        return Nan::ThrowError(Nan::New("expected arg 2: Should be a Boolean").ToLocalChecked());
+    }
+    if(!info[3]->IsString()) {
+        return Nan::ThrowError(Nan::New("expected arg 3: String (Document name)").ToLocalChecked());
+    }
+    if(!info[4]->IsString()) {
+        return Nan::ThrowError(Nan::New("expected arg 4: String (Document name)").ToLocalChecked());
+    }
+
     v8::Local<v8::Array> jsArr = v8::Local<v8::Array>::Cast(info[0]);   
 
     std::vector<std::string> arr;
@@ -142,15 +161,13 @@ void newsearch(const Nan::FunctionCallbackInfo<v8::Value>& info){
     // convert it to string
     std::string text = std::string(*param1);
 
-    Nan::Utf8String param2(info[2]->ToString());
-    // convert it to string
-    std::string flag = std::string(*param2);
+    bool flag = info[2]->BooleanValue();
 
 
     int myarraycounter=0;
 	Local<Array> myarray = Nan::New<v8::Array>();
 
-    if(flag=="NEW"){
+    if(flag){
         initialize(arr,text);
         buildMachine();
     }
