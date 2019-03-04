@@ -43,7 +43,7 @@ int f[MAXS];
 std::bitset<MAXW> out[MAXS];
 void initialize(std::vector<std::string> arr, std::string text)
 {
-    numofhitss=0, numofpatterns=0, numoftexts=0;
+    numofpatterns=0;
     arr2 = arr;
     text2 = text;
     for(int x=0; x<MAXS; x++){
@@ -144,6 +144,7 @@ void newsearch(const Nan::FunctionCallbackInfo<v8::Value>& info){
     if(!info[4]->IsString()) {
         return Nan::ThrowError(Nan::New("expected arg 4: String (Document name)").ToLocalChecked());
     }
+    numofhitss=0, numoftexts=0;
 
     v8::Local<v8::Array> jsArr = v8::Local<v8::Array>::Cast(info[0]);   
 
